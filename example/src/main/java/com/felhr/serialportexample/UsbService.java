@@ -58,8 +58,9 @@ public class UsbService extends Service {
         public void onReceivedData(byte[] arg0) {
             try {
                 String data = new String(arg0, "UTF-8");
-                if (mHandler != null)
+                if (mHandler != null) {
                     mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, data).sendToTarget();
+                }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

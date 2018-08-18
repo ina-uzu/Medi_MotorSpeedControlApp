@@ -1,51 +1,78 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:weightSum="11"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context="com.felhr.serialportexample.MainActivity">
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/serial_port"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <RelativeLayout
+        style="@style/titleBanner">
 
-    <TextView
+        <TextView style="@style/title_jay" />
+
+        <ImageView
+            android:src="@drawable/white_logo_2"
+            style="@style/title_logo"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_weight="8"
+        android:layout_width="match_parent"
+        android:layout_height="0sp">
+
+        <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="0sp"
+        android:textColor="#004b87"
+        android:background="#004b87"/>
+
+        <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_above="@+id/textViewCurSpped"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
-        android:background="#FFFFFF"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="모터 속도를(0~255) 입력해주세요 "
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/textViewCurSpped"
+            android:layout_above="@+id/editText1"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="현재 속도 0"
+            android:textSize="20sp"
+            android:layout_marginTop="10sp"
+            android:textColor="#666666"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <EditText
         android:id="@+id/editText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="28dp"
-        android:ems="10">
+        android:layout_centerInParent="true"
+        android:layout_marginTop="40sp"
+        android:ems="10"
+        android:inputType="numberDecimal">
 
         <requestFocus/>
     </EditText>
+
 
     <Button
         android:id="@+id/buttonSend"
         style="?borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#77bc1f"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
         android:layout_alignLeft="@+id/editText1"
         android:layout_alignRight="@+id/editText1"
         android:layout_below="@+id/editText1"
         android:layout_marginTop="42dp"
-        android:text="Send"/>
-</RelativeLayout>
+        android:text="입력"/>
+    </RelativeLayout>
+</LinearLayout>

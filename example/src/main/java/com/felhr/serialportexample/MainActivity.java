@@ -1,5 +1,6 @@
 package com.felhr.serialportexample;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    boolean connetect = false;
     /*
      * Notifications from UsbService will be received here.
      */
@@ -31,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
             switch (intent.getAction()) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                     Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                    connetect=true;
                     break;
+
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                     Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
                     break;
@@ -69,28 +74,78 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        decorView.setSystemUiVisibility(uiOptions);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mHandler = new MyHandler(this);
 
+        TextView Title = (TextView) findViewById(R.id.textViewTitle);
+        final TextView curSpeed = (TextView) findViewById(R.id.textViewCurSpped);
         display = (TextView) findViewById(R.id.textView1);
         editText = (EditText) findViewById(R.id.editText1);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
+
+        if( !connetect)
+            Title.setText("연결이 되지 않았습니다");
+        else
+            Title.setText("속도(0~255)를 입력해 주세요");
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editText.getText().toString().equals("")) {
+                if(!connetect)
+                    Toast.makeText(getApplicationContext(),"모터와 연결 후에 입력해주세요",Toast.LENGTH_SHORT).show();
+
+                else if (!editText.getText().toString().equals("")) {
                     String data = editText.getText().toString();
-                    if (usbService != null) { // if UsbService was correctly binded, Send data
-                        display.append(data);
+
+                    if(Integer.parseInt(data)<0 || Integer.parseInt(data)>255)
+                        Toast.makeText(getApplicationContext(),"속도 범위를 벗어났습니다 (0~255)",Toast.LENGTH_SHORT).show();
+
+                    else if (usbService != null) { // if UsbService was correctly binded, Send data
                         usbService.write(data.getBytes());
+                        curSpeed.setText("현재 속도 "+data);
                     }
+                }
+
+                else{
+                    Toast.makeText(getApplicationContext(),"속도를 입력해주세요",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        immersiveMode();
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        immersiveMode();
+                    }
+                });
+    }
+
+    public void immersiveMode() {
+        final View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
     @Override
     public void onResume() {
         super.onResume();
+        immersiveMode();
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }

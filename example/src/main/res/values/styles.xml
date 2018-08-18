@@ -12,9 +12,36 @@
         -->
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="mainObj">
+        <item name="android:layout_height">0px</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="titleBanner" parent="@style/mainObj" >
+        <item name="android:layout_weight">2</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">#004B87</item>
+    </style>
+
+    <style name="title_jay">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">Jay Medical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_margin">5sp</item>
+    </style>
+
+    <style name="title_logo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
 </resources>
