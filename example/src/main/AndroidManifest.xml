@@ -4,6 +4,7 @@
 
     <uses-feature android:name="android.hardware.usb.host"
                   android:required="true"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
+                <action android:name="com.example.alarm.notifier" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

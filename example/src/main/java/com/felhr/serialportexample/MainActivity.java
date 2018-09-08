@@ -19,12 +19,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
+import java.sql.Time;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    boolean connetect = false;
+    boolean connected = false;
     /*
      * Notifications from UsbService will be received here.
      */
@@ -34,19 +46,28 @@ public class MainActivity extends AppCompatActivity {
             switch (intent.getAction()) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                     Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
-                    connetect=true;
+                    Title.setText("속도를(0~255) 입력해주세요");
+                    connected=true;
                     break;
 
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                    connected=false;
+                    Title.setText("모터와 연결이 되지 않았습니다");
                     Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_NO_USB: // NO USB CONNECTED
+                    connected=false;
+                    Title.setText("모터와 연결이 되지 않았습니다");
                     Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
+                    connected=false;
+                    Title.setText("모터와 연결이 되지 않았습니다");
                     Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
+                    connected=false;
+                    Title.setText("모터와 연결이 되지 않았습니다");
                     Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -54,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
     };
     private UsbService usbService;
     private TextView display;
+    private TextView Title;
     private EditText editText;
     private MyHandler mHandler;
+
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
@@ -82,21 +105,43 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mHandler = new MyHandler(this);
 
-        TextView Title = (TextView) findViewById(R.id.textViewTitle);
+        Title = (TextView) findViewById(R.id.textViewTitle);
         final TextView curSpeed = (TextView) findViewById(R.id.textViewCurSpped);
         display = (TextView) findViewById(R.id.textView1);
         editText = (EditText) findViewById(R.id.editText1);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
+        JSONArray data_arr;
 
-        if( !connetect)
-            Title.setText("연결이 되지 않았습니다");
-        else
-            Title.setText("속도(0~255)를 입력해 주세요");
+/*        final RequestQueue queue = Volley.newRequestQueue(this);
+        final String url = "http://34.220.143.60:8000/api/speed/";
+
+        data_arr= new JSONArray();
+        final JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, data_arr,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            Toast.makeText(getApplicationContext(),String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
+                            JSONObject tmp = response.getJSONObject(response.length()-1);
+                            int speed = tmp.getInt("speed");
+                            editText.setText(String.valueOf(speed));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(getRequest);
+*/
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!connetect)
+                if(!connected)
                     Toast.makeText(getApplicationContext(),"모터와 연결 후에 입력해주세요",Toast.LENGTH_SHORT).show();
 
                 else if (!editText.getText().toString().equals("")) {
@@ -108,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     else if (usbService != null) { // if UsbService was correctly binded, Send data
                         usbService.write(data.getBytes());
                         curSpeed.setText("현재 속도 "+data);
+                        //PostRequest postRequest = new PostRequest(getApplicationContext(), Integer.parseInt(data), url);
                     }
                 }
 
