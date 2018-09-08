@@ -12,7 +12,6 @@ import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import com.felhr.usbserial.CDCSerialDevice;
 import com.felhr.usbserial.UsbSerialDevice;
@@ -47,7 +46,7 @@ public class UsbService extends Service {
     private UsbDevice device;
     private UsbDeviceConnection connection;
     private UsbSerialDevice serialPort;
-
+    public boolean checkFlag=false;
     private boolean serialPortConnected;
     /*
      *  Data received from serial port will be received here. Just populate onReceivedData with your code
@@ -139,8 +138,10 @@ public class UsbService extends Service {
      * This function will be called from MainActivity to write data through Serial Port
      */
     public void write(byte[] data) {
-        if (serialPort != null)
+        if (serialPort != null) {
             serialPort.write(data);
+            checkFlag=true;
+        }
     }
 
     public void setHandler(Handler mHandler) {

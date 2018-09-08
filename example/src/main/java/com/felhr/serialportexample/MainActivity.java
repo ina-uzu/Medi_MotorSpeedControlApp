@@ -19,24 +19,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
-import java.sql.Time;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     boolean connected = false;
+    static int cnt =-1;
+    String weight;
     /*
      * Notifications from UsbService will be received here.
      */
@@ -73,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-    private UsbService usbService;
+    private static UsbService usbService;
     private TextView display;
     private TextView Title;
     private EditText editText;
@@ -110,33 +100,6 @@ public class MainActivity extends AppCompatActivity {
         display = (TextView) findViewById(R.id.textView1);
         editText = (EditText) findViewById(R.id.editText1);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
-        JSONArray data_arr;
-
-/*        final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://34.220.143.60:8000/api/speed/";
-
-        data_arr= new JSONArray();
-        final JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, data_arr,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            Toast.makeText(getApplicationContext(),String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
-                            JSONObject tmp = response.getJSONObject(response.length()-1);
-                            int speed = tmp.getInt("speed");
-                            editText.setText(String.valueOf(speed));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        queue.add(getRequest);
-*/
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,7 +207,12 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     String data = (String) msg.obj;
-                    mActivity.get().display.append(data);
+
+                    mActivity.get().editText.append(data);
+
+                    if(!(data.equals("fin") || data.equals("ready")))
+                        mActivity.get().display.append(data);
+
                     break;
             }
         }
