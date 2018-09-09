@@ -25,8 +25,6 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     boolean connected = false;
-    static int cnt =-1;
-    String weight;
     /*
      * Notifications from UsbService will be received here.
      */
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private static UsbService usbService;
-    private TextView display;
+    private TextView print_weight;
     private TextView Title;
     private EditText editText;
     private MyHandler mHandler;
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         Title = (TextView) findViewById(R.id.textViewTitle);
         final TextView curSpeed = (TextView) findViewById(R.id.textViewCurSpped);
-        display = (TextView) findViewById(R.id.textView1);
+        print_weight = (TextView) findViewById(R.id.textView1);
         editText = (EditText) findViewById(R.id.editText1);
         Button sendButton = (Button) findViewById(R.id.buttonSend);
 
@@ -207,11 +205,7 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     String data = (String) msg.obj;
-
-                    mActivity.get().editText.append(data);
-
-                    if(!(data.equals("fin") || data.equals("ready")))
-                        mActivity.get().display.append(data);
+                    //mActivity.get().print_weight.append(data);
 
                     break;
             }

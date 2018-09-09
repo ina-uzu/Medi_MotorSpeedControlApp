@@ -46,7 +46,6 @@ public class UsbService extends Service {
     private UsbDevice device;
     private UsbDeviceConnection connection;
     private UsbSerialDevice serialPort;
-    public boolean checkFlag=false;
     private boolean serialPortConnected;
     /*
      *  Data received from serial port will be received here. Just populate onReceivedData with your code
@@ -140,7 +139,6 @@ public class UsbService extends Service {
     public void write(byte[] data) {
         if (serialPort != null) {
             serialPort.write(data);
-            checkFlag=true;
         }
     }
 
